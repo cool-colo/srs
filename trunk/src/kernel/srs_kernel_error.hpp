@@ -263,6 +263,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ERROR_AVC_NALU_UEV                  4027
 #define ERROR_AAC_BYTES_INVALID             4028
 #define ERROR_HTTP_REQUEST_EOF              4029
+#define ERROR_HTTP_LIVE_SOURCE_UNAVAILABLE  4030
 
 ///////////////////////////////////////////////////////
 // HTTP API error.

@@ -1292,7 +1292,8 @@ int SrsHttpConn::process_request(ISrsHttpResponseWriter* w, ISrsHttpMessage* r)
     
     // use default server mux to serve http request.
     if ((ret = http_mux->serve_http(w, r)) != ERROR_SUCCESS) {
-        if (!srs_is_client_gracefully_close(ret)) {
+        if (!srs_is_client_gracefully_close(ret) &&
+            ret != ERROR_HTTP_LIVE_SOURCE_UNAVAILABLE) {
             srs_error("serve http msg failed. ret=%d", ret);
         }
         return ret;

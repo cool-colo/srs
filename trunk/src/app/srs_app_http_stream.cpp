@@ -515,6 +515,7 @@ int SrsLiveStream::serve_http(ISrsHttpResponseWriter* w, ISrsHttpMessage* r)
 #endif
 
     // TODO: free and erase the disabled entry after all related connections is closed.
+    int last_data_available_time = ::time(NULL);
     while (entry->enabled) {
         pprint->elapse();
 
@@ -530,10 +531,21 @@ int SrsLiveStream::serve_http(ISrsHttpResponseWriter* w, ISrsHttpMessage* r)
             srs_info("http: sleep %dms for no msg", SRS_CONSTS_RTMP_PULSE_TIMEOUT_US);
             // directly use sleep, donot use consumer wait.
             st_usleep(SRS_CONSTS_RTMP_PULSE_TIMEOUT_US);
+
+            const static int NO_AVAILABLE_DATA_TIMEOUT_SEC = 300;
+
+            //int now = ::time(NULL);
+            //srs_trace("last_data_available_time:%d, current time:%d, difference:%d",last_data_available_time, now, now - last_data_available_time);  
+            if ((::time(NULL) - last_data_available_time) >= NO_AVAILABLE_DATA_TIMEOUT_SEC)
+            {
+                srs_trace("no available data for uri:%s lasts for more than %d seconds", r->uri().c_str(), NO_AVAILABLE_DATA_TIMEOUT_SEC);
+                return ERROR_HTTP_LIVE_SOURCE_UNAVAILABLE;
+            }
             
             // ignore when nothing got.
             continue;
         }
+        last_data_available_time = ::time(NULL);
 
         if (pprint->can_print()) {
             srs_info("-> "SRS_CONSTS_LOG_HTTP_STREAM" http: got %d msgs, age=%d, min=%d, mw=%d", 

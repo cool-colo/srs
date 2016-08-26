@@ -659,7 +659,8 @@ int SrsHttpServeMux::serve_http(ISrsHttpResponseWriter* w, ISrsHttpMessage* r)
     
     srs_assert(h);
     if ((ret = h->serve_http(w, r)) != ERROR_SUCCESS) {
-        if (!srs_is_client_gracefully_close(ret)) {
+        if (!srs_is_client_gracefully_close(ret) &&
+            ret != ERROR_HTTP_LIVE_SOURCE_UNAVAILABLE) {
             srs_error("handler serve http failed. ret=%d", ret);
         }
         return ret;
