@@ -1071,6 +1071,10 @@ public:
     * get whether the hstrs(http stream trigger rtmp source) enabled.
     */
     virtual bool                get_vhost_http_remux_hstrs(std::string vhost);
+    /**
+    * timeout for no specified rtmp source.
+    */
+    virtual int                 get_vhost_http_remux_timeout(std::string vhost);
 // http heartbeart section
 private:
     /**
